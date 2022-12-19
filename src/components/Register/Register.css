@@ -1,0 +1,155 @@
+.register {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 0 0 0;
+}
+
+.register__form {
+  display: flex;
+  flex-direction: column;
+  width: 396px;
+  margin: 0 auto;
+}
+
+.register__title {
+  margin: 0;
+  margin-bottom: 39px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+}
+
+.register__field {
+  display: flex;
+  flex-direction: column;
+  /* width: 396px; */
+  margin-bottom: 19px;
+}
+
+.register__label {
+  font-size: 10px;
+  line-height: 12px;
+  color: #8B8B8B;
+}
+
+.register__input {
+  padding: 5px 0 10px 0;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #424242;
+  color: #fff;
+  font-size: 14px;
+  line-height: 17px;
+  outline: none;
+}
+
+.register__input_error {
+  color: #EE3465;
+}
+
+.register__input::placeholder {
+  font-size: 14px;
+  line-height: 17px;
+  color: #8B8B8B;
+}
+
+.register__input:focus {
+  outline: none;
+  border-color: #4285F4;
+}
+
+.register__submit-button {
+  margin-top: 113px;
+  padding: 14px 0 15px 0;
+  color: #fff;
+  border: none;
+  background-color: #4285F4;
+  border-radius: 3px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  cursor: pointer;
+}
+
+.register__submit-button:hover {
+  opacity: 0.7;
+}
+
+.register__login-text {
+  margin: 0;
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 17px;
+  color: #8B8B8B;
+}
+
+.register__login-link {
+  color: #4285F4;
+  text-decoration: none;
+}
+
+.register__login-link:hover {
+  opacity: 0.7;
+}
+
+.register__input_error {
+  color: #EE3465;
+}
+
+.register__error {
+  box-sizing: border-box;
+  display: block;
+  /* height: 12px; */
+  padding-top: 6px;
+  font-size: 10px;
+  line-height: 12px;
+  color: #EE3465;
+  opacity: 0;
+}
+
+.register__error_active {
+  opacity: 1;
+}
+
+@media screen and (max-width: 1024px) {
+  .register {
+    padding: 25px 0 70px 0;
+  }
+
+  .register__title {
+    margin-bottom: 40px;
+  }
+
+  .register__button_type_edit {
+    margin-top: 194px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .register {
+    padding-top: 34px;
+  }
+
+  .register__form {
+    width: 260px;
+  }
+
+  .register__title {
+    margin-bottom: 80px;
+    text-align: center;
+  }
+
+  .register__submit-button {
+    margin-top: 202px;
+    font-size: 12px;
+    line-height: 15px;
+  }
+
+  .register__login-text {
+    margin-top: 15px;
+    font-size: 12px;
+    line-height: 15px;
+  }
+}
