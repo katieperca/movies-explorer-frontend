@@ -4,7 +4,6 @@ import SearchForm from '../SearchForm/SearchForm.js';
 import MoviesCardList from '../MoviesCardList/MoviesCardList.js';
 import moviesApi from '../../utils/MoviesApi.js';
 import Preloader from '../Preloader/Preloader.js';
-// import { func } from 'prop-types';
 import moviesHelper from '../../utils/MoviesHelper.js';
 
 function Movies({ onCardLike, onCardDelete, savedMovies, setInfoTooltip }) {
@@ -21,7 +20,6 @@ function Movies({ onCardLike, onCardDelete, savedMovies, setInfoTooltip }) {
     });
     moviesHelper.resizeWindow();
     moviesHelper.prepareEvents({setInfoTooltip, setCards});
-    // onSearch();
   }, []);  
 
   React.useEffect(() => {

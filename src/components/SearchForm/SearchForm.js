@@ -6,7 +6,6 @@ function SearchForm({onSearch, queryDefault = '', isShortMovieFilterDefault = fa
   const [errorMessage, setErrorMessage] = React.useState('');  
   const {values, handleChange, errors, isValid, setDefaultValues, setIsValid } = useFormWithValidation();
   const [isShortMovieFilter,  setIsShortMovieFilter]  = React.useState(false);
-  const didMount = React.useRef(false);
 
   React.useEffect(() => {
     setDefaultValues({query: queryDefault});
@@ -30,7 +29,6 @@ function SearchForm({onSearch, queryDefault = '', isShortMovieFilterDefault = fa
 
   function onShortFilmSearch(e) {
     setIsShortMovieFilter(e.target.checked);
-    // handleSubmit(e);
   }
 
   function handleSubmit(e) {

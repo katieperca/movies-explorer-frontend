@@ -12,15 +12,12 @@ import Login from '../Login/Login.js';
 import NotFound from '../NotFound/NotFound.js';
 import InfoTooltip from '../InfoTooltip/InfoTooltip.js';
 import mainApi from '../../utils/MainApi.js';
-// import moviesApi from '../../utils/MoviesApi.js';
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.js";
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
-// import Preloader from '../Preloader/Preloader';
 
 function App() {
-  const [load, setLoad] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({});
-  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [loggedIn, setLoggedIn] = React.useState((localStorage.getItem('jwt')));
   const [is404, setIs404] = React.useState(false);
   const [infoTooltip, setInfoTooltip] = React.useState({
     isOpen: false,
@@ -36,10 +33,6 @@ function App() {
   const history = useHistory();
 
   React.useEffect(() => {
-    getInfo();
-  }, [loggedIn]);
-
-  function getInfo() {
     const path = location.pathname;
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
@@ -54,13 +47,8 @@ function App() {
           history.push('/');
           console.log('Ой, ошибка', err);
         })
-        .finally(() => {
-          setLoad(true);
-        });
-    } else {
-      setLoad(true);
     }
-  }
+  }, [loggedIn]);
 
   function onLogIn({email,  password}) {
     mainApi.authorize(email, password)
@@ -152,7 +140,6 @@ function App() {
   }
 
   function onSignOut() {
-    // localStorage.removeItem('jwt');
     localStorage.clear();
     setLoggedIn(false);
     history.push('/');
@@ -163,8 +150,7 @@ function App() {
   }
 
   function goBack() {
-    console.log(history);
-    history.go(-2);
+    history.go(-1);
   }
 
   return (

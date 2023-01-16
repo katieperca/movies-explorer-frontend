@@ -40,10 +40,7 @@ class MoviesHelper {
     if (query != '' || isShortMovieFilter) {
       this.setFilter({query, isShortMovieFilter});
     }
-    // console.log(this.query);
-    // console.log(this.isShortMovieFilter);
-    // console.log(this.savedMode);
-    if (this.query || this.isShortMovieFilter || this.savedMode) {
+    if ((this.query || this.isShortMovieFilter || this.savedMode) && this.moviesLibrary.length > 0) {
       this.filtredMovies = this.moviesLibrary.filter(item => {
         const nameFilter = item.nameRU && item.nameRU.toLowerCase().indexOf(this.query) >= 0;
         if (nameFilter && this.isShortMovieFilter) {
