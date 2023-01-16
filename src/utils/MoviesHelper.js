@@ -36,19 +36,30 @@ class MoviesHelper {
   }
 
   filterMovies(query = '', isShortMovieFilter = false) {
-    this.filtredMovies = [];
-    if (query != '' || isShortMovieFilter) {
-      this.setFilter({query, isShortMovieFilter});
-    }
-    if ((this.query || this.isShortMovieFilter || this.savedMode) && this.moviesLibrary.length > 0) {
-      this.filtredMovies = this.moviesLibrary.filter(item => {
-        const nameFilter = item.nameRU && item.nameRU.toLowerCase().indexOf(this.query) >= 0;
-        if (nameFilter && this.isShortMovieFilter) {
-          return item.duration <= this.SHORT_MOVIE_DURATION;
-        }
-        return nameFilter;
-      });
-      this.makeMoviesList(!(query || isShortMovieFilter));
+    this.filtredMovies = []; 
+    this.setFilter({query, isShortMovieFilter});
+    if (((this.query || this.isShortMovieFilter) && this.moviesLibrary.length > 0) || this.savedMode) {
+
+      this.filtredMovies = this.moviesLibrary;
+      if (this.query) {
+        this.filtredMovies = this.filtredMovies.filter(item => {
+          const nameFilter = item.nameRU && item.nameRU.toLowerCase().indexOf(this.query) >= 0;
+          if (nameFilter && this.isShortMovieFilter) {
+            return item.duration <= this.SHORT_MOVIE_DURATION;
+          }
+          return nameFilter;
+        });
+      }
+      if (this.isShortMovieFilter) {
+        this.filtredMovies = this.filtredMovies.filter(item => {
+          const nameFilter = item.nameRU && item.nameRU.toLowerCase().indexOf(this.query) >= 0;
+          if (nameFilter && this.isShortMovieFilter) {
+            return item.duration <= this.SHORT_MOVIE_DURATION;
+          }
+          return nameFilter;
+        });
+      }
+      this.makeMoviesList((this.savedMode && (!this.query && !this.isShortMovieFilter)));
     }
   }
 
@@ -66,7 +77,7 @@ class MoviesHelper {
   }
 
   makeMoviesList(init = false) {
-    if (this.filtredMovies.length  <= 0) {
+    if (!init && this.filtredMovies.length  <= 0) {
       this.setInfoTooltip({
         isOpen: true,
         message: 'Ничего не найдено',

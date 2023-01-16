@@ -40,18 +40,6 @@ class MainApi {
     .then(this._checkResponse);
   }
 
-  // checkToken(token)  {
-  //   return fetch(`${this._baseUrl}/users/me`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${token}`,
-  //     }
-  //   })
-  //   .then(this._checkResponse);
-  // }
-
   setToken() {
     this._headers['Authorization'] = `Bearer ${localStorage.getItem('jwt')}`;
   }
@@ -59,7 +47,6 @@ class MainApi {
   getUserData() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
-      // credentials: 'include',
       headers: this._headers
     })
     .then(this._checkResponse);
@@ -68,7 +55,6 @@ class MainApi {
   updateUserData(name, email) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
-      // credentials: 'include',
       headers: this._headers,
       body: JSON.stringify({
         name: name,
@@ -81,7 +67,6 @@ class MainApi {
   getMovies() {
     return fetch(`${this._baseUrl}/movies`, {
       method: 'GET',
-      // credentials: 'include',
       headers: this._headers
     })
     .then(this._checkResponse);
@@ -90,7 +75,6 @@ class MainApi {
   saveMovie(data) {
     return fetch(`${this._baseUrl}/movies`, {
       method: 'POST',
-      // credentials: 'include',
       headers: this._headers,
       body: JSON.stringify({
         movieId: data.id,
@@ -120,8 +104,7 @@ class MainApi {
 }
 
 const mainApi = new MainApi({
-  baseUrl: 'https://api.movies.katieperca.nomoredomains.icu',
-  // baseUrl: 'http://localhost:3001',
+  baseUrl: process.env.REACT_APP_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   }

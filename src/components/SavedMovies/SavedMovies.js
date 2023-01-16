@@ -24,7 +24,7 @@ function SavedMovies({movies, onCardDelete, setInfoTooltip}) {
     moviesHelper.filterMovies();
   }, [movies]);  
 
-  function onSearch(queryString, isShortMovieFilter) {
+  function onSearch(queryString = '', isShortMovieFilter =  false) {
     moviesHelper.filterMovies(queryString, isShortMovieFilter);
   }
 
@@ -38,6 +38,7 @@ function SavedMovies({movies, onCardDelete, setInfoTooltip}) {
       <section className='savedmovies'>
         <SearchForm
           onSearch={onSearch}
+          savedMode={true}
         />
           <MoviesCardList
             onCardDelete={deleteMovie}

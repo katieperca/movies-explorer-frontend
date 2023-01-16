@@ -2,7 +2,7 @@ import React from 'react';
 import './SearchForm.css';
 import { useFormWithValidation } from "../../hooks/useFormWithValidation.js";
 
-function SearchForm({onSearch, queryDefault = '', isShortMovieFilterDefault = false}) {
+function SearchForm({onSearch, queryDefault = '', isShortMovieFilterDefault = false, savedMode = false}) {
   const [errorMessage, setErrorMessage] = React.useState('');  
   const {values, handleChange, errors, isValid, setDefaultValues, setIsValid } = useFormWithValidation();
   const [isShortMovieFilter,  setIsShortMovieFilter]  = React.useState(false);
@@ -16,13 +16,7 @@ function SearchForm({onSearch, queryDefault = '', isShortMovieFilterDefault = fa
   }, [queryDefault, isShortMovieFilterDefault]);
 
   React.useEffect(() => {
-    if (values.query) {
-      handleSubmit();
-    }
-  }, []);
-
-  React.useEffect(() => {
-    if (values.query) {
+    if (values.query || savedMode) {
       handleSubmit();
     }
   }, [isShortMovieFilter]);
@@ -35,10 +29,13 @@ function SearchForm({onSearch, queryDefault = '', isShortMovieFilterDefault = fa
     if (e) {
       e.preventDefault();
     }
-    if (!isValid) {
+    if (!isValid && !savedMode) {
       setErrorMessage('Нужно ввести ключевое слово.');
     } else if (values.query) {
       onSearch(values.query.toLowerCase().trim(), isShortMovieFilter);
+      setErrorMessage('');
+    } else if (savedMode) {
+      onSearch('', isShortMovieFilter);
       setErrorMessage('');
     }
   }
