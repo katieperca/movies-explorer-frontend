@@ -20,7 +20,6 @@ function SearchForm({onSearch, savedMode = false}) {
       } else {
         setIsShortMovieFilter(false);
       }
-      // onSearch(values.query.toLowerCase().trim(), isShortMovieFilter);
     }
   }, [currentUser]);
 

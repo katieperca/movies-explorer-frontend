@@ -35,25 +35,27 @@ function Movies({ onCardLike, onCardDelete, savedMovies, setInfoTooltip }) {
   }, []);  
 
   function onSearch(queryString = '', isShortMovieFilter = false) {
-    if (moviesHelper.moviesLibrary.length <= 0) {
-      setIsPreloaderActive(true);
-      moviesApi.getMovies()
-      .then((res) => {
-        if (res) {
-          moviesHelper.moviesLibrary = res;
-          localStorage.setItem('movies', JSON.stringify(moviesHelper.moviesLibrary));
-          moviesHelper.filterMovies(queryString.toLowerCase().trim(), isShortMovieFilter);
-          setIsPreloaderActive(false);
-        }
-      })
-      .catch((e) => {
-        setInfoTooltip({
-          isOpen: true,
-          message: 'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз',
+    if (queryString || isShortMovieFilter) {
+      if (moviesHelper.moviesLibrary.length <= 0) {
+        setIsPreloaderActive(true);
+        moviesApi.getMovies()
+        .then((res) => {
+          if (res) {
+            moviesHelper.moviesLibrary = res;
+            localStorage.setItem('movies', JSON.stringify(moviesHelper.moviesLibrary));
+            moviesHelper.filterMovies(queryString.toLowerCase().trim(), isShortMovieFilter);
+            setIsPreloaderActive(false);
+          }
+        })
+        .catch((e) => {
+          setInfoTooltip({
+            isOpen: true,
+            message: 'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз',
+          });
         });
-      });
-    } else {
-      moviesHelper.filterMovies(queryString, isShortMovieFilter);
+      } else {
+        moviesHelper.filterMovies(queryString, isShortMovieFilter);
+      }
     }
   }
 
@@ -62,6 +64,7 @@ function Movies({ onCardLike, onCardDelete, savedMovies, setInfoTooltip }) {
       <section className='movies'>
         <SearchForm
           onSearch={onSearch}
+          moviesLibrary={moviesHelper.moviesLibrary}
         />
         { isPreloaderActive ? (
             <Preloader/>
