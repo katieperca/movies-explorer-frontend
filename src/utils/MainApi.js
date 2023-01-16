@@ -120,8 +120,8 @@ class MainApi {
 }
 
 const mainApi = new MainApi({
-  // baseUrl: 'https://api.movies.katieperca.nomoredomains.icu',
-  baseUrl: 'http://localhost:3001',
+  baseUrl: 'https://api.movies.katieperca.nomoredomains.icu',
+  // baseUrl: 'http://localhost:3001',
   headers: {
     'Content-Type': 'application/json',
   }
