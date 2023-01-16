@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Link } from 'react-router-dom';
 import './Header.css';
 import Navigation from '../Navigation/Navigation.js';
 
@@ -26,11 +25,9 @@ function Header(props) {
 
   return (
     <header className={headerClass}>
-      {/* <div className='header__wrapper'> */}
-        <Navigation 
-          loggedIn={props.loggedIn}
-        />
-      {/* </div> */}
+      <Navigation 
+        loggedIn={props.loggedIn}
+      />
     </header>
   )
 }

@@ -5,28 +5,34 @@ import MoviesCardList from '../MoviesCardList/MoviesCardList.js';
 import moviesApi from '../../utils/MoviesApi.js';
 import Preloader from '../Preloader/Preloader.js';
 import moviesHelper from '../../utils/MoviesHelper.js';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext.js';
 
 function Movies({ onCardLike, onCardDelete, savedMovies, setInfoTooltip }) {
+  const currentUser = React.useContext(CurrentUserContext);
   const [cards, setCards] = React.useState([]);
   const [isPreloaderActive, setIsPreloaderActive] = React.useState(false);  
 
   React.useEffect(() => {
+    const movies = localStorage.getItem('movies');
+    if (movies) {
+      moviesHelper.moviesLibrary = JSON.parse(movies);
+    }
+  }, [currentUser]);
+
+  React.useEffect(() => {
     moviesHelper.init();
+    moviesHelper.prepareEvents({setInfoTooltip, setCards});
+    moviesHelper.resizeWindow();
+  }, []);
+
+  React.useEffect(() => {
     window.addEventListener('resize', () => {
       clearTimeout(window.resized);
       window.resized = setTimeout(function() {
         moviesHelper.resizeWindow();
       }, 250);
     });
-    moviesHelper.resizeWindow();
-    moviesHelper.prepareEvents({setInfoTooltip, setCards});
   }, []);  
-
-  React.useEffect(() => {
-    if (moviesHelper.query) {
-      onSearch();
-    }
-  }, []);
 
   function onSearch(queryString = '', isShortMovieFilter = false) {
     if (moviesHelper.moviesLibrary.length <= 0) {
@@ -35,7 +41,8 @@ function Movies({ onCardLike, onCardDelete, savedMovies, setInfoTooltip }) {
       .then((res) => {
         if (res) {
           moviesHelper.moviesLibrary = res;
-          moviesHelper.filterMovies(queryString, isShortMovieFilter);
+          localStorage.setItem('movies', JSON.stringify(moviesHelper.moviesLibrary));
+          moviesHelper.filterMovies(queryString.toLowerCase().trim(), isShortMovieFilter);
           setIsPreloaderActive(false);
         }
       })
@@ -55,14 +62,11 @@ function Movies({ onCardLike, onCardDelete, savedMovies, setInfoTooltip }) {
       <section className='movies'>
         <SearchForm
           onSearch={onSearch}
-          queryDefault={moviesHelper.query}
-          isShortMovieFilterDefault={moviesHelper.isShortMovieFilter}
         />
         { isPreloaderActive ? (
             <Preloader/>
           ) : ( 
             <MoviesCardList
-              isPreloaderActive={isPreloaderActive}
               onCardLike={onCardLike}
               onCardDelete={onCardDelete}
               cards={cards}

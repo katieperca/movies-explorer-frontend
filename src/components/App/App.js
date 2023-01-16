@@ -17,7 +17,7 @@ import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
 function App() {
   const [currentUser, setCurrentUser] = React.useState({});
-  const [loggedIn, setLoggedIn] = React.useState((localStorage.getItem('jwt')));
+  const [loggedIn, setLoggedIn] = React.useState((false));
   const [is404, setIs404] = React.useState(false);
   const [infoTooltip, setInfoTooltip] = React.useState({
     isOpen: false,
@@ -31,22 +31,28 @@ function App() {
   const [savedMovies, setSavedMovies] = React.useState([]);
   const location = useLocation();
   const history = useHistory();
-
+  
   React.useEffect(() => {
     const path = location.pathname;
     const jwt = localStorage.getItem('jwt');
     if (jwt) {
       mainApi.setToken();
+    }
+    if (jwt && !loggedIn) { 
       Promise.all([mainApi.getUserData(),  mainApi.getMovies()])
-        .then(([user, items]) => {
+      .then(([user, items]) => {
+        if (user !== currentUser) {
           setCurrentUser(user);
-          setSavedMovies(items);
+        }
+        if (loggedIn !== true) {
           setLoggedIn(true);
-          history.push(path);
-        }).catch((err) => {
-          history.push('/');
-          console.log('Ой, ошибка', err);
-        })
+        }
+        setSavedMovies(items);
+        history.push(path);
+      }).catch((err) => {
+        // history.push('/');
+        console.log('Ой, ошибка', err);
+      })
     }
   }, [loggedIn]);
 

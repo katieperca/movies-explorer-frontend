@@ -9,23 +9,26 @@ function SavedMovies({movies, onCardDelete, setInfoTooltip}) {
 
   React.useEffect(() => {
     moviesHelper.init(true);
+    moviesHelper.prepareEvents({setInfoTooltip, setCards});
+    moviesHelper.resizeWindow();
+  }, []);
+
+  React.useEffect(() => {
     window.addEventListener('resize', () => {
       clearTimeout(window.resized);
       window.resized = setTimeout(function() {
         moviesHelper.resizeWindow();
       }, 250);
     });
-    moviesHelper.resizeWindow();
-    moviesHelper.prepareEvents({setInfoTooltip, setCards});
   }, []);
 
   React.useEffect(() => {
-    moviesHelper.moviesLibrary = movies;
-    moviesHelper.filterMovies();
+    moviesHelper.savedMoviesLibrary = movies;
+    moviesHelper.filterMovies('', false);
   }, [movies]);  
 
   function onSearch(queryString = '', isShortMovieFilter =  false) {
-    moviesHelper.filterMovies(queryString, isShortMovieFilter);
+    moviesHelper.filterMovies(queryString.toLowerCase().trim(), isShortMovieFilter);
   }
 
   function deleteMovie(e) {

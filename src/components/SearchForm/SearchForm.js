@@ -1,23 +1,34 @@
 import React from 'react';
 import './SearchForm.css';
 import { useFormWithValidation } from "../../hooks/useFormWithValidation.js";
+import { CurrentUserContext } from '../../contexts/CurrentUserContext.js';
+import moviesHelper from '../../utils/MoviesHelper.js';
 
-function SearchForm({onSearch, queryDefault = '', isShortMovieFilterDefault = false, savedMode = false}) {
+function SearchForm({onSearch, savedMode = false}) {
+  const currentUser = React.useContext(CurrentUserContext);
   const [errorMessage, setErrorMessage] = React.useState('');  
-  const {values, handleChange, errors, isValid, setDefaultValues, setIsValid } = useFormWithValidation();
-  const [isShortMovieFilter,  setIsShortMovieFilter]  = React.useState(false);
+  const {values, handleChange, errors, isValid, setIsValid } = useFormWithValidation();
+  const [isShortMovieFilter,  setIsShortMovieFilter] = React.useState(false);
+  const mount = React.useRef(false);
 
   React.useEffect(() => {
-    setDefaultValues({query: queryDefault});
-    setIsShortMovieFilter(isShortMovieFilterDefault);
-    if (queryDefault) {
+    if (!savedMode && moviesHelper.getSavedQuery()) {
+      values.query = moviesHelper.getSavedQuery();
       setIsValid(true);
+      if (!savedMode) {
+        setIsShortMovieFilter(moviesHelper.getSavedIsShortMovieFilter());
+      } else {
+        setIsShortMovieFilter(false);
+      }
+      // onSearch(values.query.toLowerCase().trim(), isShortMovieFilter);
     }
-  }, [queryDefault, isShortMovieFilterDefault]);
+  }, [currentUser]);
 
   React.useEffect(() => {
-    if (values.query || savedMode) {
-      handleSubmit();
+    if (!mount.current) {
+      mount.current = true;
+    } else if (values.query != '' || savedMode) {
+      onSearch(values.query, isShortMovieFilter);
     }
   }, [isShortMovieFilter]);
 
@@ -33,9 +44,6 @@ function SearchForm({onSearch, queryDefault = '', isShortMovieFilterDefault = fa
       setErrorMessage('Нужно ввести ключевое слово.');
     } else if (values.query) {
       onSearch(values.query.toLowerCase().trim(), isShortMovieFilter);
-      setErrorMessage('');
-    } else if (savedMode) {
-      onSearch('', isShortMovieFilter);
       setErrorMessage('');
     }
   }
@@ -61,7 +69,7 @@ function SearchForm({onSearch, queryDefault = '', isShortMovieFilterDefault = fa
             <span>
               <input 
                 onChange={onShortFilmSearch}
-                checked={isShortMovieFilter ?? false}
+                checked={isShortMovieFilter}
                 className='searchform__checkbox' 
                 type='checkbox' 
               />

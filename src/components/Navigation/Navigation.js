@@ -66,7 +66,6 @@ function Navigation(props) {
               </li>
             </ul>
           )}
-          {/* <button onClick={handleBurger} className='navigation__button' aria-label='Открыть меню'></button> */}
         </Route>
       </Switch>
     </nav>
