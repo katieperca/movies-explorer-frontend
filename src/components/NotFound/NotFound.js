@@ -2,10 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './NotFound.css';
 
+function NotFound({ setIs404, goBack }) {
+  React.useEffect(() => {
+    setIs404(true);
+  }, []);
 
-
-function Promo(params) {
-  params.setIs404(true);
   return (
     <section className='notfound'>
       <div className='notfound__container'>
@@ -13,7 +14,7 @@ function Promo(params) {
           <h1 className='notfound__title'>404</h1>
           <p className='notfound__text'>Страница не найдена</p>
         </div>
-        <Link to="/" className='notfound__link'>
+        <Link to="/" onClick={goBack} className='notfound__link'>
           Назад
         </Link>
       </div>
@@ -21,4 +22,4 @@ function Promo(params) {
   )
 }
 
-export default Promo;
+export default NotFound;

@@ -1,11 +1,17 @@
 .header {
   display: flex;
+  margin: 0 auto;
   /* justify-content: space-between; */
   align-items: center;
-  margin: 0 auto;
-  padding: 18px 14px;
+  padding: 18px 30px;
   max-width: 1140px;
+  /* width: 100%; */
+  /* box-sizing: border-box; */
 }
+
+/* .header__wrapper {
+  margin: 0 auto;
+} */
 
 .header_main {
   padding: 18px 30px;

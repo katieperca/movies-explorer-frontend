@@ -1,13 +1,13 @@
 import React from 'react';
 import './Footer.css';
 
-function Footer(params) {
+function Footer(props) {
   const pagesWithFooter = [
     '/',
     '/movies',
     '/saved-movies'
   ];
-  if (pagesWithFooter.includes(params.page)) {
+  if (pagesWithFooter.includes(props.page)) {
     return (
       <footer className='footer'>
         <p className='footer__text'>Учебный проект Яндекс.Практикум х BeatFilm.</p>

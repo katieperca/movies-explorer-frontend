@@ -23,10 +23,15 @@
   margin: 0;
   padding: 0;
 }
+.profile__field-container {
+  display:  flex;
+  justify-content: space-between;
 
+}
 .profile__field {
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
   padding: 16px 0;
   border-bottom: 1px solid #424242;
 }
@@ -110,7 +115,22 @@
   font-size: 11px;
   line-height: 13px;
   color: #EE3465;
+  text-align: left;
+}
+
+.profile__submit-error {
+  font-size: 11px;
+  line-height: 13px;
+  color: #EE3465;
   text-align: center;
+}
+
+.profile__error_type_name {
+  margin-bottom: 10px;
+}
+
+.profile__error_type_email {
+  margin-top: 10px;
 }
 
 .profile__button_type_save {
@@ -124,6 +144,18 @@
   font-size: 14px;
   line-height: 17px;
   cursor: pointer;
+}
+
+.profile__button_disabled  {
+  background-color: #F8F8F8;
+  color: #c2c2c2;
+  cursor: default;
+}
+
+.profile__button:disabled  {
+  background-color: #F8F8F8;
+  color: #c2c2c2;
+  cursor: default;
 }
 
 @media screen and (max-width: 1024px) {

@@ -1,5 +1,6 @@
 .movies {
   padding-bottom: 91px;
+  /* padding: 0 30px 91px; */
 }
 
 .movies__button {
@@ -15,6 +16,10 @@
   font-weight: 500;
   font-size: 12px;
   line-height: 15px;
+}
+
+.movies__button_hidden {
+  display: none;
 }
 
 .movies__button:hover {
