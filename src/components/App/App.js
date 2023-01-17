@@ -40,9 +40,7 @@ function App() {
       mainApi.setToken();
       Promise.all([mainApi.getUserData(),  mainApi.getMovies()])
       .then(([user, items]) => {
-        if (user !== currentUser) {
-          setCurrentUser(user);
-        }
+        setCurrentUser(user);
         if (loggedIn !== true) {
           setLoggedIn(true);
         }
@@ -53,7 +51,7 @@ function App() {
         console.log('Ой, ошибка', err);
       })
     }
-  }, []);
+  }, [loggedIn]);
 
   function onLogIn({email,  password}) {
     mainApi.authorize(email, password)
@@ -146,6 +144,7 @@ function App() {
   function onSignOut() {
     localStorage.clear();
     setLoggedIn(false);
+    setCurrentUser({});
     history.push('/');
   }
 
