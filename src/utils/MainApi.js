@@ -1,3 +1,4 @@
+import { BASE_URL } from './constants.js';
 class MainApi {
   constructor({ baseUrl, headers }) {
     this._baseUrl = baseUrl;
@@ -104,7 +105,7 @@ class MainApi {
 }
 
 const mainApi = new MainApi({
-  baseUrl: process.env.REACT_APP_BASE_URL,
+  baseUrl: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   }
