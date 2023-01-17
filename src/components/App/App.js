@@ -14,6 +14,7 @@ import InfoTooltip from '../InfoTooltip/InfoTooltip.js';
 import mainApi from '../../utils/MainApi.js';
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute.js";
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import { setToken, getToken } from '../../utils/utils.js';
 
 function App() {
   const [currentUser, setCurrentUser] = React.useState({});
@@ -34,11 +35,9 @@ function App() {
   
   React.useEffect(() => {
     const path = location.pathname;
-    const jwt = localStorage.getItem('jwt');
+    const jwt = getToken();
     if (jwt) {
       mainApi.setToken();
-    }
-    if (jwt && !loggedIn) { 
       Promise.all([mainApi.getUserData(),  mainApi.getMovies()])
       .then(([user, items]) => {
         if (user !== currentUser) {
@@ -54,15 +53,14 @@ function App() {
         console.log('Ой, ошибка', err);
       })
     }
-  }, [loggedIn]);
+  }, []);
 
   function onLogIn({email,  password}) {
     mainApi.authorize(email, password)
     .then((res) => {
       if (res.token) {
-        localStorage.setItem('jwt', res.token);
+        setToken(res.token)
         setLoginError('');
-        setCurrentUser(res);
         setLoggedIn(true);
         history.push('/movies');
       }
@@ -192,7 +190,7 @@ function App() {
             component={SavedMovies}
             loggedIn={loggedIn}
             onCardDelete={onCardDelete}
-            movies={savedMovies}
+            savedMovies={savedMovies}
             setInfoTooltip={setInfoTooltip}
           />
           <ProtectedRoute 

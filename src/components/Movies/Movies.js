@@ -4,59 +4,91 @@ import SearchForm from '../SearchForm/SearchForm.js';
 import MoviesCardList from '../MoviesCardList/MoviesCardList.js';
 import moviesApi from '../../utils/MoviesApi.js';
 import Preloader from '../Preloader/Preloader.js';
-import moviesHelper from '../../utils/MoviesHelper.js';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext.js';
+import { 
+  filterMovies,
+  getMoviesFromLocal, 
+  getIsShortMovieFilterFromLocal, 
+  filterShortMovies,
+  setIsShortMovieFilterToLocal,
+  setQueryToLocal,
+  setMoviesToLocal
+} from '../../utils/utils.js';
 
 function Movies({ onCardLike, onCardDelete, savedMovies, setInfoTooltip }) {
   const currentUser = React.useContext(CurrentUserContext);
+  const [previousFilteredMovies, setPreviousFilteredMovies] = React.useState([]);
+  const [moviesSource, setMoviesSource] = React.useState([]);
+  const [filteredMovies, setFilteredMovies] = React.useState([]);
   const [cards, setCards] = React.useState([]);
   const [isPreloaderActive, setIsPreloaderActive] = React.useState(false);  
+  const [isShortMovieFilter, setIsShortMovieFilter] = React.useState(false);
 
   React.useEffect(() => {
-    const movies = localStorage.getItem('movies');
-    if (movies) {
-      moviesHelper.moviesLibrary = JSON.parse(movies);
-    }
+    setIsShortMovieFilter(getIsShortMovieFilterFromLocal());
   }, [currentUser]);
 
   React.useEffect(() => {
-    moviesHelper.init();
-    moviesHelper.prepareEvents({setInfoTooltip, setCards});
-    moviesHelper.resizeWindow();
-  }, []);
-
-  React.useEffect(() => {
-    window.addEventListener('resize', () => {
-      clearTimeout(window.resized);
-      window.resized = setTimeout(function() {
-        moviesHelper.resizeWindow();
-      }, 250);
-    });
-  }, []);  
-
-  function onSearch(queryString = '', isShortMovieFilter = false) {
-    if (queryString || isShortMovieFilter) {
-      if (moviesHelper.moviesLibrary.length <= 0) {
-        setIsPreloaderActive(true);
-        moviesApi.getMovies()
-        .then((res) => {
-          if (res) {
-            moviesHelper.moviesLibrary = res;
-            localStorage.setItem('movies', JSON.stringify(moviesHelper.moviesLibrary));
-            moviesHelper.filterMovies(queryString.toLowerCase().trim(), isShortMovieFilter);
-            setIsPreloaderActive(false);
-          }
-        })
-        .catch((e) => {
-          setInfoTooltip({
-            isOpen: true,
-            message: 'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз',
-          });
-        });
+    const movies = getMoviesFromLocal();
+    if (movies) {
+      setPreviousFilteredMovies(movies);
+      if (getIsShortMovieFilterFromLocal()) {
+        setFilteredMovies(filterShortMovies(movies));
       } else {
-        moviesHelper.filterMovies(queryString, isShortMovieFilter);
+        setFilteredMovies(movies);
       }
     }
+  }, [currentUser]);
+
+  function setFiltredMovies(movies, query, shortMovieFilter) {
+    const resultMovies = filterMovies(movies, query, shortMovieFilter);
+    if (resultMovies.length === 0) {
+      setInfoTooltip({
+        isOpen: true,
+        message: 'Ничего не найдено',
+      });
+    }
+    setPreviousFilteredMovies(resultMovies);
+    setFilteredMovies(resultMovies);
+    setMoviesToLocal(resultMovies);
+  }
+
+  function onSearch(query) {
+    setIsShortMovieFilterToLocal(isShortMovieFilter);
+    setQueryToLocal(query);
+
+    if (moviesSource.length === 0) {
+      setIsPreloaderActive(true);
+      moviesApi.getMovies()
+      .then((res) => {
+        if (res) {
+          setMoviesSource(res);
+          setFiltredMovies(res, query, isShortMovieFilter);
+        }
+      })
+      .catch((e) => {
+        setInfoTooltip({
+          isOpen: true,
+          message: 'Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз',
+        });
+      })
+      .finally(() => {
+        setIsPreloaderActive(false);
+      });
+    } else {
+      setFiltredMovies(moviesSource, query, isShortMovieFilter);
+    }
+  }
+
+  function onIsShortFilms () {
+    const newFilterVal = !isShortMovieFilter;
+    setIsShortMovieFilter(newFilterVal);
+    if (newFilterVal) {
+      setFilteredMovies(filterShortMovies(previousFilteredMovies));
+    } else {
+      setFilteredMovies(previousFilteredMovies);
+    }
+    setIsShortMovieFilterToLocal(newFilterVal);
   }
 
   return (
@@ -64,7 +96,8 @@ function Movies({ onCardLike, onCardDelete, savedMovies, setInfoTooltip }) {
       <section className='movies'>
         <SearchForm
           onSearch={onSearch}
-          moviesLibrary={moviesHelper.moviesLibrary}
+          onIsShortFilms={onIsShortFilms}
+          isShortMovieFilter={isShortMovieFilter}
         />
         { isPreloaderActive ? (
             <Preloader/>
@@ -72,12 +105,11 @@ function Movies({ onCardLike, onCardDelete, savedMovies, setInfoTooltip }) {
             <MoviesCardList
               onCardLike={onCardLike}
               onCardDelete={onCardDelete}
-              cards={cards}
+              cards={filteredMovies}
               savedMovies={savedMovies}
           />
           )
         }
-        <button onClick={moviesHelper.moreCards} className={`movies__button ${!moviesHelper.isMoreButtonShowed ? 'movies__button_hidden': ''}`} aria-label='more films'>Ещё</button>
       </section>
     </main>
   )

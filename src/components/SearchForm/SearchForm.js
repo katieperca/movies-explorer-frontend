@@ -2,47 +2,26 @@ import React from 'react';
 import './SearchForm.css';
 import { useFormWithValidation } from "../../hooks/useFormWithValidation.js";
 import { CurrentUserContext } from '../../contexts/CurrentUserContext.js';
-import moviesHelper from '../../utils/MoviesHelper.js';
+import { isMoviesPage, getQueryFromLocal } from '../../utils/utils.js';
 
-function SearchForm({onSearch, savedMode = false}) {
+function SearchForm({onSearch, savedMode, isShortMovieFilter, onIsShortFilms}) {
   const currentUser = React.useContext(CurrentUserContext);
   const [errorMessage, setErrorMessage] = React.useState('');  
   const {values, handleChange, errors, isValid, setIsValid } = useFormWithValidation();
-  const [isShortMovieFilter,  setIsShortMovieFilter] = React.useState(false);
-  const mount = React.useRef(false);
 
   React.useEffect(() => {
-    if (!savedMode && moviesHelper.getSavedQuery()) {
-      values.query = moviesHelper.getSavedQuery();
+    if (isMoviesPage() && getQueryFromLocal()) {
+      values.query = getQueryFromLocal();
       setIsValid(true);
-      if (!savedMode) {
-        setIsShortMovieFilter(moviesHelper.getSavedIsShortMovieFilter());
-      } else {
-        setIsShortMovieFilter(false);
-      }
     }
   }, [currentUser]);
 
-  React.useEffect(() => {
-    if (!mount.current) {
-      mount.current = true;
-    } else if (values.query != '' || savedMode) {
-      onSearch(values.query, isShortMovieFilter);
-    }
-  }, [isShortMovieFilter]);
-
-  function onShortFilmSearch(e) {
-    setIsShortMovieFilter(e.target.checked);
-  }
-
   function handleSubmit(e) {
-    if (e) {
-      e.preventDefault();
-    }
-    if (!isValid && !savedMode) {
+    e.preventDefault();
+    if (!isValid) {
       setErrorMessage('Нужно ввести ключевое слово.');
-    } else if (values.query) {
-      onSearch(values.query.toLowerCase().trim(), isShortMovieFilter);
+    } else {
+      onSearch(values.query);
       setErrorMessage('');
     }
   }
@@ -67,7 +46,7 @@ function SearchForm({onSearch, savedMode = false}) {
           <label className='searchform__toggle'>
             <span>
               <input 
-                onChange={onShortFilmSearch}
+                onChange={onIsShortFilms}
                 checked={isShortMovieFilter}
                 className='searchform__checkbox' 
                 type='checkbox' 

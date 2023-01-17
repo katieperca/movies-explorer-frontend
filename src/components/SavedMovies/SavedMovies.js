@@ -2,38 +2,41 @@ import React from 'react';
 import './SavedMovies.css';
 import SearchForm from '../SearchForm/SearchForm.js';
 import MoviesCardList from '../MoviesCardList/MoviesCardList.js';
-import moviesHelper from '../../utils/MoviesHelper.js';
+import { CurrentUserContext }  from '../../contexts/CurrentUserContext.js';
+import { filterMovies, filterShortMovies } from '../../utils/utils.js';
 
-function SavedMovies({movies, onCardDelete, setInfoTooltip}) {
-  const [cards, setCards] = React.useState([]);
-
-  React.useEffect(() => {
-    moviesHelper.init(true);
-    moviesHelper.prepareEvents({setInfoTooltip, setCards});
-    moviesHelper.resizeWindow();
-  }, []);
+function SavedMovies({savedMovies, onCardDelete, setInfoTooltip}) {
+  const currentUser = React.useContext(CurrentUserContext);
+  const [isShortMovieFilter, setIsShortMovieFilter] = React.useState(false);
+  const [filteredMovies, setFilteredMovies] = React.useState([]);
+  const [showedMovies, setShowedMovies] = React.useState([]);
 
   React.useEffect(() => {
-    window.addEventListener('resize', () => {
-      clearTimeout(window.resized);
-      window.resized = setTimeout(function() {
-        moviesHelper.resizeWindow();
-      }, 250);
-    });
-  }, []);
+    setShowedMovies(savedMovies);
+    setFilteredMovies(savedMovies);
+  }, [currentUser, savedMovies]);
 
-  React.useEffect(() => {
-    moviesHelper.savedMoviesLibrary = movies;
-    moviesHelper.filterMovies('', false);
-  }, [movies]);  
-
-  function onSearch(queryString = '', isShortMovieFilter =  false) {
-    moviesHelper.filterMovies(queryString.toLowerCase().trim(), isShortMovieFilter);
+  function onSearch(query) {
+    const resultMovies = filterMovies(savedMovies, query, isShortMovieFilter);
+    if (resultMovies.length === 0) {
+      setInfoTooltip({
+        isOpen: true,
+        message: 'Ничего не найдено',
+      });
+    } else {
+      setFilteredMovies(resultMovies);
+      setShowedMovies(resultMovies);
+    }
   }
 
-  function deleteMovie(e) {
-    onCardDelete(e);
-    moviesHelper.filterMovies();
+  function onIsShortFilms () {
+    const newFilterVal = !isShortMovieFilter;
+    setIsShortMovieFilter(newFilterVal);
+    if (newFilterVal) {
+      setShowedMovies(filterShortMovies(filteredMovies));
+    } else {
+      setShowedMovies(filteredMovies);
+    }
   }
 
   return (
@@ -41,13 +44,15 @@ function SavedMovies({movies, onCardDelete, setInfoTooltip}) {
       <section className='savedmovies'>
         <SearchForm
           onSearch={onSearch}
-          savedMode={true}
+          onIsShortFilms={onIsShortFilms}
+          isShortMovieFilter={isShortMovieFilter}
         />
-          <MoviesCardList
-            onCardDelete={deleteMovie}
-            cards={cards}
-            savedMode={true}
-          />
+        <MoviesCardList
+          onCardDelete={onCardDelete}
+          cards={showedMovies}
+          savedMode={true}
+          savedMovies={savedMovies}
+        />
       </section>
     </main>
   )

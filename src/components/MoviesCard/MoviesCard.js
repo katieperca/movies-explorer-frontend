@@ -1,6 +1,5 @@
 import React from 'react';
 import './MoviesCard.css';
-// import poster from '../../images/poster.jpg';
 
 function MoviesCard({ card, savedMode, onCardDelete, onCardLike, savedMovies}) {
   let movie = card;

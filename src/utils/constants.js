@@ -1,0 +1,3 @@
+const SHORT_MOVIE_DURATION = 40;
+
+export { SHORT_MOVIE_DURATION };
