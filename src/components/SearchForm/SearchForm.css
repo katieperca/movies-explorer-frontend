@@ -2,6 +2,10 @@
   margin: 0 14px;
 }
 
+.searchform {
+  margin: 0;
+}
+
 .searchform__container {
   max-width: 1140px;
   padding: 70px 0;
@@ -58,6 +62,12 @@
   font-size: 18px;
   line-height: 20px;
   color: #8B8B8B;
+}
+
+.searchform__error {
+  background-color: transparent;
+  color: #EE3465;
+  margin-right: auto;
 }
 
 .searchform__button {
@@ -155,11 +165,6 @@
   .searchform__container {
     padding: 80px 0 44px;
   }
-/* 
-  .searchform {
-    margin: 0 10px;
-    padding: 80px 0 44px;
-  } */
 
   .searchform__form {
     padding: 0;

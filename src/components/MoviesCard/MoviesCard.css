@@ -14,11 +14,19 @@
   padding: 14px;
 }
 
+/* .card__description {
+  margin-right: 20px;
+} */
+
 .card__title {
   margin: 0;
+  max-width: 260px;
   font-weight: 500;
   font-size: 15px;
   line-height: 18px;
+  overflow: hidden;
+	text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card__duration {
@@ -30,6 +38,7 @@
 }
 
 .card__save-button {
+  padding: 0;
   background-color: transparent;
   width: 30px;
   height: 30px;
@@ -45,7 +54,7 @@
 }
 
 .card__save-button:active {
-  background-image: url('../../images/save-button-active.svg');
+  /* background-image: url('../../images/save-button-active.svg'); */
 }
 
 .card__save-button_active {
@@ -71,5 +80,9 @@
 @media screen and (max-width: 450px) {
   .card {
    max-width: 100%;
+  }
+
+  .card__title {
+    max-width: 200px;
   }
 }
